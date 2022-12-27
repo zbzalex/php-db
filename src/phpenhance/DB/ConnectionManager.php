@@ -5,7 +5,7 @@ namespace phpenhance\DB;
 class ConnectionManager
 {
   /**
-   * @var phpenhance\DB\Conenction[]
+   * @var \phpenhance\DB\Conenction[]
    */
   private $connections = [];
 
@@ -20,7 +20,7 @@ class ConnectionManager
   }
 
   /**
-   * @return phpenhance\DB\Connection|null
+   * @return \phpenhance\DB\Connection|null
    */
   public function getConnection($name = null)
   {

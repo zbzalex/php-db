@@ -93,6 +93,9 @@ class DaoMapper
     return preg_match('/^\d+$/i', $value);
   }
 
+  /**
+   * @return string
+   */
   private function compileQuery($query, array $params)
   {
     return preg_replace_callback('/@([a-z_]+)/i', function ($matches) use ($params) {

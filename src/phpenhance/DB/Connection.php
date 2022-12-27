@@ -10,7 +10,7 @@ class Connection
   private $pdo;
 
   /**
-   * @var phpenhance\DB\DaoMapper
+   * @var \phpenhance\DB\DaoMapper
    */
   private $daoMapping = null;
 

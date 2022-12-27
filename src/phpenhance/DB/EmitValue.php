@@ -4,7 +4,11 @@ namespace phpenhance\DB;
 
 class EmitValue
 {
+  /**
+   * @var string
+   */
   protected $class;
+
   public function __construct($class)
   {
     $this->class = $class;
