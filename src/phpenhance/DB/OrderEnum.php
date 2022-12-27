@@ -1,8 +1,8 @@
 <?php
 
-namespace DB;
+namespace phpenhance\DB;
 
-use Util\AbstractEnum;
+use phpenhance\Util\AbstractEnum;
 
 class OrderEnum extends AbstractEnum
 {

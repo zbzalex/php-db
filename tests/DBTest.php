@@ -2,8 +2,8 @@
 
 namespace Tests;
 
-use DB\Connection;
-use DB\DaoMapper;
+use phpenhance\DB\Connection;
+use phpenhance\DB\DaoMapper;
 use PHPUnit\Framework\TestCase;
 
 class ApplicationTest extends TestCase

@@ -1,8 +1,8 @@
 <?php
 
-namespace DB;
+namespace phpenhance\DB;
 
-use Util\IteratorImpl;
+use phpenhance\Util\IteratorImpl;
 
 class DaoMapper
 {

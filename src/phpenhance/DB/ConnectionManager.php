@@ -1,6 +1,6 @@
 <?php
 
-namespace DB;
+namespace phpenhance\DB;
 
 class ConnectionManager
 {
