@@ -2,7 +2,7 @@
 
 namespace Tests;
 
-use Util\TypedArray;
+use phpenhance\Util\TypedArray;
 
 class Model
 {

@@ -2,6 +2,7 @@
 
 namespace phpenhance\DB;
 
+use phpenhance\Annotations\AnnotationReader;
 use phpenhance\Util\IteratorImpl;
 
 class DaoMapper
@@ -12,7 +13,7 @@ class DaoMapper
   public function __construct(Connection $connection, $daoClass)
   {
     $this->connection = $connection;
-    $this->daoClass = $daoClass;
+    $this->daoClass   = $daoClass;
   }
 
   public function __call($method, $arguments)
@@ -21,23 +22,23 @@ class DaoMapper
     $reflectionMethod = $reflectionClass->getMethod($method);
     $parameters = $reflectionMethod->getParameters();
 
-    $reader = new \Annotations\AnnotationReader($this->daoClass, $method);
+    $reader = new AnnotationReader($this->daoClass, $method);
     $reader->parse();
 
-    $insertAnnotation = $this->getAnnotation($reader->getAnnotations(), "Insert");
-    $updateAnnotation = $this->getAnnotation($reader->getAnnotations(), "Update");
-    $deleteAnnotation = $this->getAnnotation($reader->getAnnotations(), "Delete");
+    $insertAnnotation = $reader->getAnnotation("Insert");
+    $updateAnnotation = $reader->getAnnotation("Update");
+    $deleteAnnotation = $reader->getAnnotation("Delete");
 
-    $queryAnnotation = $this->getAnnotation($reader->getAnnotations(), "Query");
+    $queryAnnotation = $reader->getAnnotation("Query");
     if ($queryAnnotation !== null) {
-      $queryAnnotationValue = $this->getAnnotationParam($queryAnnotation->getParams(), "value");
+      $queryAnnotationValue = $queryAnnotation->getParameter("value");
 
-      $emitAnnotation = $this->getAnnotation($reader->getAnnotations(),  "Emit");
+      $emitAnnotation = $reader->getAnnotation("Emit");
       if ($emitAnnotation === null) {
         throw new \Exception("@Emit  annotation not found");
       }
 
-      $emitAnnotationValue = $this->getAnnotationParam($emitAnnotation->getParams(), "value");
+      $emitAnnotationValue = $emitAnnotation->getParameter("value");
       $emitValue = $this->getEmitValue($emitAnnotationValue);
 
       if (count($parameters) != count($arguments)) {
@@ -102,36 +103,10 @@ class DaoMapper
 
   private function getEmitValue($value)
   {
-    if (preg_match('/^(?<class>[^\[]+)\[\]/', $value, $matches)) {
+    if (preg_match('/^(?<class>[^\[]+)\[\]$/', $value, $matches)) {
       return new EmitValueArray($matches['class']);
     } else {
       return new EmitValue($value);
     }
-  }
-
-  private function getAnnotation(array $annotations, $annotationName)
-  {
-    $it = new IteratorImpl($annotations);
-    while ($it->hasNext()) {
-      $annotation = $it->next();
-      if ($annotation->getName() == $annotationName) {
-        return $annotation;
-      }
-    }
-
-    return null;
-  }
-
-  private function getAnnotationParam(array $params, $pname)
-  {
-    $it = new IteratorImpl(array_keys($params));
-    while ($it->hasNext()) {
-      $p = $it->next();
-      if ($p == $pname) {
-        return $params[$p];
-      }
-    }
-
-    return null;
   }
 }
