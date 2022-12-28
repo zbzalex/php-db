@@ -11,10 +11,24 @@ class ApplicationTest extends TestCase
   public function test1()
   {
     $connectionManager = new \phpenhance\DB\ConnectionManager();
-    $connectionManager->setConnection($connectionManager->getDefaultConnectionName(), new Connection(new \PDO("mysql:host=localhost;dbname=test", "root", "")));
+    $connectionManager->setConnection($connectionManager->getDefaultConnectionName(), new Connection(new \PDO("mysql:host=localhost;dbname=bloodlands", "root", "123")));
     $daoMapper = new DaoMapper($connectionManager->getConnection(), \Tests\TestDao::class);
-    $result = $daoMapper->getAll(0, 10);
 
-    var_dump($result);
+    // $obj = new \Tests\Model();
+    // $obj->nick = "hello";
+
+    // $obj = $daoMapper->insert($obj);
+
+    // var_dump($obj);
+
+    // $obj->curHp = null;
+
+    // $obj = $daoMapper->update($obj);
+
+    // var_dump($obj);
+
+    $obj = $daoMapper->getAll(0, 5);
+
+    var_dump($obj);
   }
 }

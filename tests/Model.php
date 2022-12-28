@@ -2,15 +2,46 @@
 
 namespace Tests;
 
-use phpenhance\Util\TypedArray;
-
+/**
+ * @Model("users")
+ */
 class Model
 {
+  /**
+   * @Id
+   * @Column
+   */
   public $id;
-  public static function fromArray(array $data) {
-    $data = new TypedArray($data);
-    $obj_ = new Model();
-    $obj_->id = $data->getInt("id");
-    return $obj_;
-  }
+
+  /**
+   * @Column
+   * @Nullable
+   */
+  public $nick;
+
+  /**
+   * @Column(dataType = "int")
+   */
+  public $sex;
+
+  /**
+   * @Column(name = "last_update", dataType = "int")
+   */
+  public $updatedAt;
+
+
+  /**
+   * @Column(name = "curhp", dataType = "int", default = "5")
+   */
+  public $curHp;
+
+  /**
+   * @Column(name = "maxhp", dataType = "int", default = "5")
+   */
+  public $maxHp;
+
+  /**
+   * @Column(dataType = "text")
+   */
+  public $about;
 }

@@ -23,31 +23,47 @@ interface TestDao
 
 namespace Tests;
 
-use Util\TypedArray;
+use phpenhance\Util\TypedArray;
 
+/**
+ * @Model("users")
+ */
 class Model
 {
+  /**
+   * @Id
+   * @Column
+   */
   public $id;
-  public static function fromArray(array $data) {
-    $data = new TypedArray($data);
-    $obj_ = new Model();
-    $obj_->id = $data->getInt("id");
-    return $obj_;
-  }
+
+  /**
+   * @Column
+   */
+  public $nick;
+
+  /**
+   * @Column(dataType = "int")
+   */
+  public $sex;
+  
+  /**
+   * @Column(name = "created_at", dataType = "int")
+   */
+  public $createdAt;
 }
 ```
 
 ```
 <?php
 
-...
+// ...
 
-$connectionManager = new \DB\ConnectionManager();
+$connectionManager = new \phpenhance\DB\ConnectionManager();
 $connectionManager->setConnection($connectionManager->getDefaultConnectionName(), new Connection(new \PDO("mysql:host=localhost;dbname=test", "root", "")));
 $daoMapper = new DaoMapper($connectionManager->getConnection(), \Tests\TestDao::class);
 $result = $daoMapper->getAll(0, 10);
 
 var_dump($result);
 
-...
+// ...
 ```
