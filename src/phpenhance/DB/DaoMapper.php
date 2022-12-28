@@ -330,8 +330,44 @@ class DaoMapper
     return $obj;
   }
 
-  private function doDelete($id)
+  private function doDelete($obj)
   {
+    $meta = $this->getMeta($obj);
+
+    $sql = [];
+    $sql[] = "delete from `" . $meta->tableName . "`";
+
+    $params = [];
+    $autoIncrementPropertyName = null;
+
+    $reflector = new \ReflectionClass(get_class($obj));
+    $properties = $reflector->getProperties();
+    $it = new IteratorImpl($properties);
+    while ($it->hasNext()) {
+      $property = $it->next();
+
+      if (isset($meta->columns[$property->getName()]) === false) {
+        continue;
+      }
+
+      $column = $meta->columns[$property->getName()];
+      if ($column->autoIncrement) {
+        $autoIncrementPropertyName = $property->getName();
+        continue;
+      }
+    }
+
+    if ($autoIncrementPropertyName === null) {
+      throw new AutoIncrementPropertyNotFoundException();
+    }
+
+    $sql[] = sprintf("where `%s`=?;", $autoIncrementPropertyName);
+    $compiledSql = implode("\n", $sql);
+
+    $reflector = new \ReflectionProperty($obj, $autoIncrementPropertyName);
+    $params[] = $reflector->getValue($obj);
+
+    $this->connection->executeNativeQuery($compiledSql, $params);
   }
 
   public static function isDigit($value)

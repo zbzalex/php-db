@@ -12,9 +12,30 @@ interface TestDao
 {
   /**
    * @Query("select * from users limit @offset, @limit;")
-   * @Emit ("\Tests\Model")
+   * @Emit ("\Tests\Model[]")
    */
   function getAll($offset, $limit);
+
+  /**
+   * @Query("select * from users limit 1;")
+   * @Emit ("\Tests\Model")
+   */
+  function get($id);
+
+  /**
+   * @Insert
+   */
+  function insert($obj);
+
+  /**
+   * @Insert
+   */
+  function update($obj);
+
+  /**
+   * @Delete
+   */
+  function delete($obj);
 }
 ```
 

@@ -27,8 +27,10 @@ class ApplicationTest extends TestCase
 
     // var_dump($obj);
 
-    $obj = $daoMapper->getAll(0, 5);
+    $obj = $daoMapper->get(236);
 
     var_dump($obj);
+
+    $daoMapper->delete($obj);
   }
 }
