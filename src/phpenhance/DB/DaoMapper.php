@@ -93,7 +93,7 @@ class DaoMapper
 
             $column = $meta->columns[$property->getName()];
             $reflector = new \ReflectionProperty($obj, $property->getName());
-            $value     = $arr[$column->name];
+            $value     = isset($arr[$column->name]) ? $arr[$column->name] : null;
             $value     = $value !== null
               ? ($column->dataType == "int" ? intval($value) : $value)
               : ($column->dataType == "int" ? ($column->default === null ? 0 : intval($column->default)) : $column->default);
@@ -121,7 +121,7 @@ class DaoMapper
 
           $column = $meta->columns[$property->getName()];
           $reflector = new \ReflectionProperty($obj, $property->getName());
-          $value     = $arr[$column->name];
+          $value     = isset($arr[$column->name]) ? $arr[$column->name] : null;
           $value     = $value !== null
             ? ($column->dataType == "int" ? intval($value) : $value)
             : ($column->dataType == "int" ? ($column->default === null ? 0 : intval($column->default)) : $column->default);

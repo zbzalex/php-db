@@ -36,7 +36,7 @@ class Model
   public $curHp;
 
   /**
-   * @Column(name = "maxhp", dataType = "int", default = "5")
+   * @Column(name = "maxhp", dataType = "int", default = "7")
    */
   public $maxHp;
 
