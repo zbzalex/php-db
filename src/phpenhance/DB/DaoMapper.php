@@ -346,6 +346,10 @@ class DaoMapper
     $it = new IteratorImpl($properties);
     while ($it->hasNext()) {
       $property = $it->next();
+      if (isset($meta->columns[$property->getName()]) === false) {
+        continue;
+      }
+
       $column = $meta->columns[$property->getName()];
       if ($column->autoIncrement) {
         return $property->getName();
