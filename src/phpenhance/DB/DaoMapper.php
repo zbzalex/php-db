@@ -275,36 +275,40 @@ class DaoMapper
     $sql[] = "set";
 
     $columns = [];
-    $it = new IteratorImpl(array_values($meta->columns));
+    $it = new IteratorImpl($obj->modified);
     while ($it->hasNext()) {
-      $column = $it->next();
+      $modified = $it->next();
 
-      if ($column->autoIncrement) continue;
+      if (isset($meta->columns[$modified]) === false) {
+        continue;
+      }
+
+      $column = $meta->columns[$modified];
+      if ($column->autoIncrement) {
+        continue;
+      }
 
       $columns[] = sprintf("`%s`=?", $column->name);
     }
-    $sql[] = implode(",", $columns);
+    $sql[] = implode(",\n", $columns);
 
     $params = [];
-    $autoIncrementPropertyName = null;
 
     $reflector = new \ReflectionClass(get_class($obj));
-    $properties = $reflector->getProperties();
-    $it = new IteratorImpl($properties);
+    $it = new IteratorImpl($obj->modified);
     while ($it->hasNext()) {
-      $property = $it->next();
+      $modified = $it->next();
 
-      if (isset($meta->columns[$property->getName()]) === false) {
+      if (isset($meta->columns[$modified]) === false) {
         continue;
       }
 
-      $column = $meta->columns[$property->getName()];
+      $column = $meta->columns[$modified];
       if ($column->autoIncrement) {
-        $autoIncrementPropertyName = $property->getName();
         continue;
       }
 
-      $reflector = new \ReflectionProperty($obj, $property->getName());
+      $reflector = new \ReflectionProperty($obj, $modified);
       $value     = $reflector->getValue($obj);
       $value     = $value !== null
         ? ($column->dataType == "int" ? intval($value) : $value)
@@ -315,19 +319,40 @@ class DaoMapper
       $params[] = $value;
     }
 
-    if ($autoIncrementPropertyName === null) {
+    $id = $this->getId($obj);
+
+    if ($id === null) {
       throw new AutoIncrementPropertyNotFoundException();
     }
 
-    $sql[] = sprintf("where `%s`=?;", $autoIncrementPropertyName);
+    $sql[] = sprintf("where `%s`=?;", $id);
     $compiledSql = implode("\n", $sql);
 
-    $reflector = new \ReflectionProperty($obj, $autoIncrementPropertyName);
+    $reflector = new \ReflectionProperty($obj, $id);
     $params[] = $reflector->getValue($obj);
 
     $this->connection->executeNativeQuery($compiledSql, $params);
 
+    $obj->modified = [];
+
     return $obj;
+  }
+
+  private function getId($obj)
+  {
+    $meta = $this->getMeta($obj);
+    $reflector = new \ReflectionClass(get_class($obj));
+    $properties = $reflector->getProperties();
+    $it = new IteratorImpl($properties);
+    while ($it->hasNext()) {
+      $property = $it->next();
+      $column = $meta->columns[$property->getName()];
+      if ($column->autoIncrement) {
+        return $property->getName();
+      }
+    }
+
+    return null;
   }
 
   private function doDelete($obj)

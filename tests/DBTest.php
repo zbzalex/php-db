@@ -12,29 +12,19 @@ class ApplicationTest extends TestCase
   {
     $connectionManager = new \phpenhance\DB\ConnectionManager();
     $connectionManager->setConnection($connectionManager->getDefaultConnectionName(), new Connection(new \PDO("mysql:host=localhost;dbname=bloodlands", "root", "123")));
-    $daoMapper = new DaoMapper($connectionManager->getConnection(), \Tests\TestDao::class);
+    $daoMapper = new DaoMapper($connectionManager->getConnection(), \Tests\Dao\UserDao::class);
     
-    $obj = new \Tests\Model();
-    $obj->nick = "hello";
-    $obj->sex  = 1;
-    // $obj->curHp = 5;
-    // $obj->maxHp = 7;
-    $obj->about = "asd";
+    //$obj = new \Tests\Model\User();
 
-    $obj = $daoMapper->insert($obj);
+    $obj = $daoMapper->getUser(50);
+    //var_dump($result);
+    $obj->set("updatedAt", time());
 
-    // var_dump($obj);
+    var_dump($obj->modified);
+    $daoMapper->update($obj);
+    var_dump($obj->modified);
 
-    // $obj->curHp = null;
-
-    // $obj = $daoMapper->update($obj);
-
-    // var_dump($obj);
-
-    $obj = $daoMapper->get($obj->id);
-
-    var_dump($obj);
-
-    $daoMapper->delete($obj);
+    $obj = $daoMapper->getUser(50);
+    var_dump($obj->updatedAt);
   }
 }
