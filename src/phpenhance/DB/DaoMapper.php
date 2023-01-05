@@ -322,7 +322,7 @@ class DaoMapper
     $id = $this->getId($obj);
 
     if ($id === null) {
-      throw new AutoIncrementPropertyNotFoundException();
+      throw new \Exception("auto increment not found");
     }
 
     $sql[] = sprintf("where `%s`=?;", $id);
